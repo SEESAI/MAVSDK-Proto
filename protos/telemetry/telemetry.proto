@@ -34,10 +34,18 @@ service TelemetryService {
     rpc SubscribeGroundSpeedNed(SubscribeGroundSpeedNedRequest) returns(stream GroundSpeedNedResponse) {}
     // Subscribe to 'GPS info' updates.
     rpc SubscribeGpsInfo(SubscribeGpsInfoRequest) returns(stream GpsInfoResponse) {}
+    // Subscribe to 'Distance sensor' updates.
+    rpc SubscribeDistanceSensor(SubscribeDistanceSensorRequest) returns(stream DistanceSensorResponse) {}
+    // Subscribe to 'IMU reading NED' updates.
+    rpc SubscribeImuReadingNed(SubscribeImuReadingNedRequest) returns(stream ImuReadingNedResponse) {}
     // Subscribe to 'battery' updates.
     rpc SubscribeBattery(SubscribeBatteryRequest) returns(stream BatteryResponse) {}
+    // Subscribe to 'battery current' updates.
+    rpc SubscribeBatteryStatus(SubscribeBatteryStatusRequest) returns(stream BatteryStatusResponse) {}
     // Subscribe to 'flight mode' updates.
     rpc SubscribeFlightMode(SubscribeFlightModeRequest) returns(stream FlightModeResponse) {}
+    // Subscribe to 'mode' updates.
+    rpc SubscribeModeInfo(SubscribeModeInfoRequest) returns(stream ModeInfoResponse) {}
     // Subscribe to 'health' updates.
     rpc SubscribeHealth(SubscribeHealthRequest) returns(stream HealthResponse) {}
     // Subscribe to 'RC status' updates.
@@ -48,6 +56,8 @@ service TelemetryService {
     rpc SubscribeActuatorControlTarget(SubscribeActuatorControlTargetRequest) returns(stream ActuatorControlTargetResponse) {}
     // Subscribe to 'actuator output status' updates.
     rpc SubscribeActuatorOutputStatus(SubscribeActuatorOutputStatusRequest) returns(stream ActuatorOutputStatusResponse) {}
+    // Subscribe to 'servo output raw' updates.
+    rpc SubscribeServoOutputRaw(SubscribeServoOutputRawRequest) returns(stream ServoOutputRawResponse) {}
     // Subscribe to 'odometry' updates.
     rpc SubscribeOdometry(SubscribeOdometryRequest) returns(stream OdometryResponse) {}
 }
@@ -112,14 +122,34 @@ message GpsInfoResponse {
     GpsInfo gps_info = 1; // The next 'GPS info' state
 }
 
+message SubscribeDistanceSensorRequest {}
+message DistanceSensorResponse {
+    DistanceSensor distance_sensor = 1;
+}
+
+message SubscribeImuReadingNedRequest {}
+message ImuReadingNedResponse {
+    ImuReadingNed imu_reading_ned = 1; // The next 'IMU reading (NED)' state
+}
+
 message SubscribeBatteryRequest {}
 message BatteryResponse {
     Battery battery = 1; // The next 'battery' state
 }
 
+message SubscribeBatteryStatusRequest {}
+message BatteryStatusResponse {
+    BatteryStatus battery_status = 1; // The next 'battery current' state
+}
+
 message SubscribeFlightModeRequest {}
 message FlightModeResponse {
     FlightMode flight_mode = 1; // The next flight mode
+}
+
+message SubscribeModeInfoRequest {}
+message ModeInfoResponse {
+    ModeInfo mode_info = 1; // The next modes
 }
 
 message SubscribeHealthRequest {}
@@ -145,6 +175,11 @@ message ActuatorControlTargetResponse {
 message SubscribeActuatorOutputStatusRequest {}
 message ActuatorOutputStatusResponse {
     ActuatorOutputStatus actuator_output_status = 1; // Actuator output status
+}
+
+message SubscribeServoOutputRawRequest {}
+message ServoOutputRawResponse {
+    ServoOutputRaw servo_output_raw = 1; // Actuator output status
 }
 
 message SubscribeOdometryRequest {}
@@ -209,6 +244,42 @@ message SpeedNed {
 message GpsInfo {
     int32 num_satellites = 1; // Number of visible satellites in use
     FixType fix_type = 2; // Fix type
+    double latitude_deg = 3; // Latitude in degrees (range: -90 to +90)
+    double longitude_deg = 4; // Longitude in degrees (range: -180 to +180)
+    float absolute_altitude_m = 5; // Altitude AMSL (above mean sea level) in metres
+    float h_acc_m = 6; // Position uncertainty in metres
+    float v_acc_m = 7; // Altitude uncertainty in metres
+}
+
+message AccelerationNed {
+    float north_m_s2 = 1;
+    float east_m_s2 = 2;
+    float down_m_s2 = 3;
+}
+
+message AngularVelocityNed {
+    float north_rad_s = 1;
+    float east_rad_s = 2;
+    float down_rad_s = 3;
+}
+
+message MagneticFieldNed {
+   float north_gauss = 1;
+   float east_gauss = 2;
+   float down_gauss = 3;
+}
+
+message ImuReadingNed {
+    AccelerationNed acceleration = 1;
+    AngularVelocityNed angular_velocity = 2;
+    MagneticFieldNed magnetic_field = 3;
+    float abs_pressure = 4;
+    float pressure_alt = 5;
+    float temperature_deg_c = 6;
+}
+
+message DistanceSensor {
+    float current_distance_m = 1;
 }
 
 // Fix type.
@@ -225,7 +296,14 @@ enum FixType {
 // Battery type.
 message Battery {
     float voltage_v = 1; // Voltage in volts
-    float remaining_percent = 2; // Estimated battery remaining (range: 0.0 to 1.0)
+    float current_a = 2; // Current in Amps
+    float remaining_percent = 3; // Estimated battery remaining (range: 0.0 to 1.0)
+}
+
+
+// Battery status type.
+message BatteryStatus {
+    float mah_consumed = 1; // Measured consumption since power on or reboot
 }
 
 /*
@@ -250,6 +328,13 @@ enum FlightMode {
     ACRO = 12; // In 'Acro' mode
     STABILIZED = 13; // In 'Stabilize' mode
     RATTITUDE = 14; // In 'Rattitude' mode
+}
+
+// Base & Custom Modes
+message ModeInfo {
+    uint32 base_mode = 1;  // uint8 flags
+    uint32 custom_main_mode = 2; // uint8 custom main mode
+    uint32 custom_sub_mode = 3; // uint8 custom sub
 }
 
 // Health type.
@@ -291,6 +376,11 @@ message ActuatorControlTarget {
 message ActuatorOutputStatus {
     uint32 active = 1;
     repeated float actuator = 2;
+}
+
+// Servo Outputs
+message ServoOutputRaw {
+    repeated uint32 servo = 1;
 }
 
 // Landed State enumeration

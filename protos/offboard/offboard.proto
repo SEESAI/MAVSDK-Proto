@@ -17,11 +17,17 @@ option java_outer_classname = "OffboardProto";
  */
 service OffboardService {
     /*
-     * Start offboard control.
+     * Request offboard mode only (don't send repeated setpoints)
+     */
+    rpc RequestOffboard(StartRequest) returns(StartResponse) {}
+    /*
+     * Request offboard mode
+     * And send the most recent setpoint repeatedly until told to stop offboard mode
      */
     rpc Start(StartRequest) returns(StartResponse) {}
     /*
-     * Stop offboard control.
+     * Request auto-hold mode
+     * And stop sending setpoints
      *
      * The vehicle will be put into Hold mode: https://docs.px4.io/en/flight_modes/hold.html
      */
@@ -29,10 +35,14 @@ service OffboardService {
     /*
      * Check if offboard control is active.
      *
-     * True means that the vehicle is in offboard mode and we are actively sending
-     * setpoints.
+     * True means that the vehicle is in offboard mode and we are actively sending setpoints.
      */
     rpc IsActive(IsActiveRequest) returns(IsActiveResponse) {}
+    /*
+     * Set the attitude in terms of roll, pitch and yaw in degrees with thrust.
+     * Only send one request.
+     */
+    rpc SetAttitudeOnce(SetAttitudeRequest) returns(SetAttitudeResponse) {}
     /*
      * Set the attitude in terms of roll, pitch and yaw in degrees with thrust.
      */
@@ -43,15 +53,38 @@ service OffboardService {
      * First 8 controls will go to control group 0, the following 8 controls to control group 1 (if
      * actuator_control.num_controls more than 8).
      */
+    rpc SetActuatorControlOnce(SetActuatorControlRequest) returns(SetActuatorControlResponse) {}
+    /*
+     * Set direct actuator control values to groups #0 and #1.
+     * Only send one request.
+     *
+     * First 8 controls will go to control group 0, the following 8 controls to control group 1 (if
+     * actuator_control.num_controls more than 8).
+     */
     rpc SetActuatorControl(SetActuatorControlRequest) returns(SetActuatorControlResponse) {}
+    /*
+     * Set the attitude rate in terms of pitch, roll and yaw angular rate along with thrust.
+     * Only send one request.
+     */
+    rpc SetAttitudeRateOnce(SetAttitudeRateRequest) returns(SetAttitudeRateResponse) {}
     /*
      * Set the attitude rate in terms of pitch, roll and yaw angular rate along with thrust.
      */
     rpc SetAttitudeRate(SetAttitudeRateRequest) returns(SetAttitudeRateResponse) {}
     /*
      * Set the position in NED coordinates and yaw.
+    * Only send one request.
+    */
+    rpc SetPositionNedOnce(SetPositionNedRequest) returns(SetPositionNedResponse) {}
+    /*
+     * Set the position in NED coordinates and yaw.
      */
     rpc SetPositionNed(SetPositionNedRequest) returns(SetPositionNedResponse) {}
+    /*
+    * Set the velocity in body coordinates and yaw angular rate.
+    * Only send one request.
+    */
+    rpc SetVelocityBodyOnce(SetVelocityBodyRequest) returns(SetVelocityBodyResponse) {}
     /*
      * Set the velocity in body coordinates and yaw angular rate.
      */
@@ -60,6 +93,7 @@ service OffboardService {
      * Set the velocity in NED coordinates and yaw.
      */
     rpc SetVelocityNed(SetVelocityNedRequest) returns(SetVelocityNedResponse) {}
+
 }
 
 message StartRequest {}
