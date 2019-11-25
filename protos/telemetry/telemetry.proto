@@ -234,7 +234,13 @@ message Battery {
  * For more information about flight modes, check out
  * https://docs.px4.io/en/config/flight_mode.html.
  */
-enum FlightMode {
+
+message FlightMode {
+    uint32 base_mode = 1; // Base mode (flags)
+    AutoMode auto_mode = 2; // Auto mode derived from custom & auto modes in mavlink
+}
+
+enum AutoMode {
     UNKNOWN = 0; // Mode not known
     READY = 1; // Armed and ready to take off
     TAKEOFF = 2; // Taking off
