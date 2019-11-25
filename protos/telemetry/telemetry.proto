@@ -38,6 +38,8 @@ service TelemetryService {
     rpc SubscribeBattery(SubscribeBatteryRequest) returns(stream BatteryResponse) {}
     // Subscribe to 'flight mode' updates.
     rpc SubscribeFlightMode(SubscribeFlightModeRequest) returns(stream FlightModeResponse) {}
+    // Subscribe to 'mode' updates.
+    rpc SubscribeModeInfo(SubscribeModeInfoRequest) returns(stream ModeInfoResponse) {}
     // Subscribe to 'health' updates.
     rpc SubscribeHealth(SubscribeHealthRequest) returns(stream HealthResponse) {}
     // Subscribe to 'RC status' updates.
@@ -120,6 +122,11 @@ message BatteryResponse {
 message SubscribeFlightModeRequest {}
 message FlightModeResponse {
     FlightMode flight_mode = 1; // The next flight mode
+}
+
+message SubscribeModeInfoRequest {}
+message ModeInfoResponse {
+    ModeInfo mode_info = 1; // The next modes
 }
 
 message SubscribeHealthRequest {}
@@ -234,13 +241,7 @@ message Battery {
  * For more information about flight modes, check out
  * https://docs.px4.io/en/config/flight_mode.html.
  */
-
-message FlightMode {
-    uint32 base_mode = 1; // Base mode (flags)
-    AutoMode auto_mode = 2; // Auto mode derived from custom & auto modes in mavlink
-}
-
-enum AutoMode {
+enum FlightMode {
     UNKNOWN = 0; // Mode not known
     READY = 1; // Armed and ready to take off
     TAKEOFF = 2; // Taking off
@@ -250,6 +251,13 @@ enum AutoMode {
     LAND = 6; // Landing
     OFFBOARD = 7; // In 'offboard' mode
     FOLLOW_ME = 8; // In 'follow-me' mode
+}
+
+// Base & Custom Modes
+message ModeInfo {
+    uint32 base_mode = 1;  // uint8 flags
+    uint32 custom_main_mode = 2; // uint8 custom main mode
+    uint32 custom_sub_mode = 3; // uint8 custom sub
 }
 
 // Health type.
