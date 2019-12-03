@@ -17,11 +17,17 @@ option java_outer_classname = "OffboardProto";
  */
 service OffboardService {
     /*
-     * Start offboard control.
+     * Request offboard mode only (don't send repeated setpoints)
+     */
+    rpc RequestOffboard(StartRequest) returns(StartResponse) {}
+    /*
+     * Request offboard mode
+     * And send the most recent setpoint repeatedly until told to stop offboard mode
      */
     rpc Start(StartRequest) returns(StartResponse) {}
     /*
-     * Stop offboard control.
+     * Request auto-hold mode
+     * And stop sending setpoints
      *
      * The vehicle will be put into Hold mode: https://docs.px4.io/en/flight_modes/hold.html
      */
@@ -29,8 +35,7 @@ service OffboardService {
     /*
      * Check if offboard control is active.
      *
-     * True means that the vehicle is in offboard mode and we are actively sending
-     * setpoints.
+     * True means that the vehicle is in offboard mode and we are actively sending setpoints.
      */
     rpc IsActive(IsActiveRequest) returns(IsActiveResponse) {}
     /*
@@ -60,6 +65,17 @@ service OffboardService {
      * Set the velocity in NED coordinates and yaw.
      */
     rpc SetVelocityNed(SetVelocityNedRequest) returns(SetVelocityNedResponse) {}
+    /*
+    * Set the velocity in body coordinates and yaw angular rate.
+    * Only send one request.
+    */
+    rpc SetVelocityBodyOnce(SetVelocityBodyRequest) returns(SetVelocityBodyResponse) {}
+    /*
+    * Set the velocity in body coordinates and yaw angular rate.
+    * Only send one request.
+    */
+    rpc SetPositionNedOnce(SetPositionNedRequest) returns(SetPositionNedResponse) {}
+
 }
 
 message StartRequest {}
