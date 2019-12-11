@@ -40,6 +40,11 @@ service OffboardService {
     rpc IsActive(IsActiveRequest) returns(IsActiveResponse) {}
     /*
      * Set the attitude in terms of roll, pitch and yaw in degrees with thrust.
+     * Only send one request.
+     */
+    rpc SetAttitudeOnce(SetAttitudeRequest) returns(SetAttitudeResponse) {}
+    /*
+     * Set the attitude in terms of roll, pitch and yaw in degrees with thrust.
      */
     rpc SetAttitude(SetAttitudeRequest) returns(SetAttitudeResponse) {}
     /*
@@ -49,6 +54,11 @@ service OffboardService {
      * actuator_control.num_controls more than 8).
      */
     rpc SetActuatorControl(SetActuatorControlRequest) returns(SetActuatorControlResponse) {}
+    /*
+     * Set the attitude rate in terms of pitch, roll and yaw angular rate along with thrust.
+     * Only send one request.
+     */
+    rpc SetAttitudeRateOnce(SetAttitudeRateRequest) returns(SetAttitudeRateResponse) {}
     /*
      * Set the attitude rate in terms of pitch, roll and yaw angular rate along with thrust.
      */
