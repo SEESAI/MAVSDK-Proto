@@ -53,6 +53,14 @@ service OffboardService {
      * First 8 controls will go to control group 0, the following 8 controls to control group 1 (if
      * actuator_control.num_controls more than 8).
      */
+    rpc SetActuatorControlOnce(SetActuatorControlRequest) returns(SetActuatorControlResponse) {}
+    /*
+     * Set direct actuator control values to groups #0 and #1.
+     * Only send one request.
+     *
+     * First 8 controls will go to control group 0, the following 8 controls to control group 1 (if
+     * actuator_control.num_controls more than 8).
+     */
     rpc SetActuatorControl(SetActuatorControlRequest) returns(SetActuatorControlResponse) {}
     /*
      * Set the attitude rate in terms of pitch, roll and yaw angular rate along with thrust.
@@ -65,8 +73,18 @@ service OffboardService {
     rpc SetAttitudeRate(SetAttitudeRateRequest) returns(SetAttitudeRateResponse) {}
     /*
      * Set the position in NED coordinates and yaw.
+    * Only send one request.
+    */
+    rpc SetPositionNedOnce(SetPositionNedRequest) returns(SetPositionNedResponse) {}
+    /*
+     * Set the position in NED coordinates and yaw.
      */
     rpc SetPositionNed(SetPositionNedRequest) returns(SetPositionNedResponse) {}
+    /*
+    * Set the velocity in body coordinates and yaw angular rate.
+    * Only send one request.
+    */
+    rpc SetVelocityBodyOnce(SetVelocityBodyRequest) returns(SetVelocityBodyResponse) {}
     /*
      * Set the velocity in body coordinates and yaw angular rate.
      */
@@ -75,16 +93,6 @@ service OffboardService {
      * Set the velocity in NED coordinates and yaw.
      */
     rpc SetVelocityNed(SetVelocityNedRequest) returns(SetVelocityNedResponse) {}
-    /*
-    * Set the velocity in body coordinates and yaw angular rate.
-    * Only send one request.
-    */
-    rpc SetVelocityBodyOnce(SetVelocityBodyRequest) returns(SetVelocityBodyResponse) {}
-    /*
-    * Set the velocity in body coordinates and yaw angular rate.
-    * Only send one request.
-    */
-    rpc SetPositionNedOnce(SetPositionNedRequest) returns(SetPositionNedResponse) {}
 
 }
 
