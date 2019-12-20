@@ -37,7 +37,7 @@ service TelemetryService {
     // Subscribe to 'battery' updates.
     rpc SubscribeBattery(SubscribeBatteryRequest) returns(stream BatteryResponse) {}
     // Subscribe to 'battery current' updates.
-    rpc SubscribeBatteryCurrent(SubscribeBatteryCurrentRequest) returns(stream BatteryCurrentResponse) {}
+    rpc SubscribeBatteryStatus(SubscribeBatteryStatusRequest) returns(stream BatteryStatusResponse) {}
     // Subscribe to 'flight mode' updates.
     rpc SubscribeFlightMode(SubscribeFlightModeRequest) returns(stream FlightModeResponse) {}
     // Subscribe to 'mode' updates.
@@ -121,9 +121,9 @@ message BatteryResponse {
     Battery battery = 1; // The next 'battery' state
 }
 
-message SubscribeBatteryCurrentRequest {}
-message BatteryCurrentResponse {
-    BatteryCurrent battery_current = 1; // The next 'battery current' state
+message SubscribeBatteryStatusRequest {}
+message BatteryStatusResponse {
+    BatteryStatus battery_status = 1; // The next 'battery current' state
 }
 
 message SubscribeFlightModeRequest {}
@@ -239,14 +239,14 @@ enum FixType {
 // Battery type.
 message Battery {
     float voltage_v = 1; // Voltage in volts
-    float remaining_percent = 2; // Estimated battery remaining (range: 0.0 to 1.0)
+    float current_a = 2; // Current in Amps
+    float remaining_percent = 3; // Estimated battery remaining (range: 0.0 to 1.0)
 }
 
 
-// Battery current type.
-message BatteryCurrent {
-    float current_a = 1; // Current in amps
-    float mah_consumed = 2; // Measured consumption since power on or reboot
+// Battery status type.
+message BatteryStatus {
+    float mah_consumed = 1; // Measured consumption since power on or reboot
 }
 
 /*
