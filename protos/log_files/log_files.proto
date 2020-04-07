@@ -17,9 +17,9 @@ message GetEntriesResponse {
 }
 
 message Entry {
-    uint32 id;
-    string date;
-    uint32 size_bytes;
+    uint32 id = 1;
+    string date = 2;
+    uint32 size_bytes = 3;
 }
 
 message LogFilesResult {
