@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package mavsdk.rpc.log_files;
+
+option java_package = "io.mavsdk.log_files";
+option java_outer_classname = "LogFilesProto";
+
+// Provide raw access to get log files.
+service LogFilesService {
+    rpc GetEntries(GetEntriesRequest) returns(GetEntriesResponse) {}
+}
+
+message GetEntriesRequest {}
+message GetEntriesResponse {
+    LogFilesResult log_files_result = 1;
+    repeated Entry entry = 2;
+}
+
+message Entry {
+    uint32 id;
+    string date;
+    uint32 size_bytes;
+}
+
+message LogFilesResult {
+    enum Result {
+        SUCCESS = 0;
+        NO_LOGFILES = 1;
+        TOO_MANY_RETRIES = 2;
+        PROGRESS = 3;
+        UNKNOWN = 4;
+    }
+
+    Result result = 1;
+    string result_str = 2;
+}
