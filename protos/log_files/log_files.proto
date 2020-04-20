@@ -8,12 +8,23 @@ option java_outer_classname = "LogFilesProto";
 // Provide raw access to get log files.
 service LogFilesService {
     rpc GetEntries(GetEntriesRequest) returns(GetEntriesResponse) {}
+
+    rpc DownloadLogFile(DownloadLogFileRequest) returns(DownloadLogFileResponse) {}
 }
 
 message GetEntriesRequest {}
 message GetEntriesResponse {
     LogFilesResult log_files_result = 1;
     repeated Entry entry = 2;
+}
+
+message DownloadLogFileRequest {
+    uint32 id = 1;
+    string file_path = 2;
+}
+
+message DownloadLogFileResponse {
+    LogFilesResult log_files_result = 1;
 }
 
 message Entry {
