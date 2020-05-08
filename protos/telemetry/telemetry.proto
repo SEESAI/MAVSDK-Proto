@@ -34,6 +34,8 @@ service TelemetryService {
     rpc SubscribeGroundSpeedNed(SubscribeGroundSpeedNedRequest) returns(stream GroundSpeedNedResponse) {}
     // Subscribe to 'GPS info' updates.
     rpc SubscribeGpsInfo(SubscribeGpsInfoRequest) returns(stream GpsInfoResponse) {}
+    // Subscribe to 'IMU reading NED' updates.
+    rpc SubscribeImuReadingNed(SubscribeImuReadingNedRequest) returns(stream ImuReadingNedResponse) {}
     // Subscribe to 'battery' updates.
     rpc SubscribeBattery(SubscribeBatteryRequest) returns(stream BatteryResponse) {}
     // Subscribe to 'battery current' updates.
@@ -114,6 +116,11 @@ message GroundSpeedNedResponse {
 message SubscribeGpsInfoRequest {}
 message GpsInfoResponse {
     GpsInfo gps_info = 1; // The next 'GPS info' state
+}
+
+message SubscribeImuReadingNedRequest {}
+message ImuReadingNedResponse {
+    ImuReadingNed imu_reading_ned = 1; // The next 'IMU reading (NED)' state
 }
 
 message SubscribeBatteryRequest {}
@@ -226,6 +233,31 @@ message GpsInfo {
     double latitude_deg = 3; // Latitude in degrees (range: -90 to +90)
     double longitude_deg = 4; // Longitude in degrees (range: -180 to +180)
     float absolute_altitude_m = 5; // Altitude AMSL (above mean sea level) in metres
+}
+
+message AccelerationNed {
+    float north_m_s2 = 1;
+    float east_m_s2 = 2;
+    float down_m_s2 = 3;
+}
+
+message AngularVelocityNed {
+    float north_rad_s = 1;
+    float east_rad_s = 2;
+    float down_rad_s = 3;
+}
+
+message MagneticFieldNed {
+   float north_gauss = 1;
+   float east_gauss = 2;
+   float down_gauss = 3;
+}
+
+message ImuReadingNed {
+    AccelerationNed acceleration = 1;
+    AngularVelocityNed angular_velocity = 2;
+    MagneticFieldNed magnetic_field = 3;
+    float temperature_deg_c = 4;
 }
 
 // Fix type.
