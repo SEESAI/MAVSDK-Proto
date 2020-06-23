@@ -34,6 +34,8 @@ service TelemetryService {
     rpc SubscribeGroundSpeedNed(SubscribeGroundSpeedNedRequest) returns(stream GroundSpeedNedResponse) {}
     // Subscribe to 'GPS info' updates.
     rpc SubscribeGpsInfo(SubscribeGpsInfoRequest) returns(stream GpsInfoResponse) {}
+    // Subscribe to 'Distance sensor' updates.
+    rpc SubscribeDistanceSensor(SubscribeDistanceSensorRequest) returns(stream DistanceSensorResponse) {}
     // Subscribe to 'IMU reading NED' updates.
     rpc SubscribeImuReadingNed(SubscribeImuReadingNedRequest) returns(stream ImuReadingNedResponse) {}
     // Subscribe to 'battery' updates.
@@ -116,6 +118,11 @@ message GroundSpeedNedResponse {
 message SubscribeGpsInfoRequest {}
 message GpsInfoResponse {
     GpsInfo gps_info = 1; // The next 'GPS info' state
+}
+
+message SubscribeDistanceSensorRequest {}
+message DistanceSensorResponse {
+    DistanceSensor distance_sensor = 1;
 }
 
 message SubscribeImuReadingNedRequest {}
@@ -258,6 +265,10 @@ message ImuReadingNed {
     AngularVelocityNed angular_velocity = 2;
     MagneticFieldNed magnetic_field = 3;
     float temperature_deg_c = 4;
+}
+
+message DistanceSensor {
+    float current_distance_m = 3;
 }
 
 // Fix type.
