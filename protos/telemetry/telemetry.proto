@@ -266,11 +266,12 @@ message ImuReadingNed {
     AccelerationNed acceleration = 1;
     AngularVelocityNed angular_velocity = 2;
     MagneticFieldNed magnetic_field = 3;
-    float temperature_deg_c = 4;
+    float pressure_alt = 4;
+    float temperature_deg_c = 5;
 }
 
 message DistanceSensor {
-    float current_distance_m = 3;
+    float current_distance_m = 1;
 }
 
 // Fix type.
