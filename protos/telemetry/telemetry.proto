@@ -56,6 +56,8 @@ service TelemetryService {
     rpc SubscribeActuatorControlTarget(SubscribeActuatorControlTargetRequest) returns(stream ActuatorControlTargetResponse) {}
     // Subscribe to 'actuator output status' updates.
     rpc SubscribeActuatorOutputStatus(SubscribeActuatorOutputStatusRequest) returns(stream ActuatorOutputStatusResponse) {}
+    // Subscribe to 'servo output raw' updates.
+    rpc SubscribeServoOutputRaw(SubscribeServoOutputRawRequest) returns(stream ServoOutputRawResponse) {}
     // Subscribe to 'odometry' updates.
     rpc SubscribeOdometry(SubscribeOdometryRequest) returns(stream OdometryResponse) {}
 }
@@ -173,6 +175,11 @@ message ActuatorControlTargetResponse {
 message SubscribeActuatorOutputStatusRequest {}
 message ActuatorOutputStatusResponse {
     ActuatorOutputStatus actuator_output_status = 1; // Actuator output status
+}
+
+message SubscribeServoOutputRawRequest {}
+message ServoOutputRawResponse {
+    ServoOutputRaw servo_output_raw = 1; // Actuator output status
 }
 
 message SubscribeOdometryRequest {}
@@ -369,6 +376,11 @@ message ActuatorControlTarget {
 message ActuatorOutputStatus {
     uint32 active = 1;
     repeated float actuator = 2;
+}
+
+// Servo Outputs
+message ServoOutputRaw {
+    repeated uint32 servo = 1;
 }
 
 // Landed State enumeration
