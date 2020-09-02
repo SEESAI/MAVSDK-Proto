@@ -266,7 +266,7 @@ message ImuReadingNed {
     AccelerationNed acceleration = 1;
     AngularVelocityNed angular_velocity = 2;
     MagneticFieldNed magnetic_field = 3;
-    float abs_pressure_mbar = 4;
+    float abs_pressure = 4;
     float pressure_alt = 5;
     float temperature_deg_c = 6;
 }
