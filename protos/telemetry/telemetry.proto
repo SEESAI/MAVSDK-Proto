@@ -506,8 +506,9 @@ enum FlightMode {
 
 message ModeInfo {
     uint32 base_mode = 1 [(mavsdk.options.default_value)="0"];
-    uint32 custom_main_mode = 2 [[(mavsdk.options.default_value)="0"];
+    uint32 custom_main_mode = 2 [(mavsdk.options.default_value)="0"];
     uint32 custom_sub_mode = 3 [(mavsdk.options.default_value)="0"];
+}
 
 // Health type.
 message Health {
