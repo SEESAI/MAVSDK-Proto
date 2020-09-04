@@ -36,10 +36,16 @@ service TelemetryService {
     rpc SubscribeVelocityNed(SubscribeVelocityNedRequest) returns(stream VelocityNedResponse) {}
     // Subscribe to 'GPS info' updates.
     rpc SubscribeGpsInfo(SubscribeGpsInfoRequest) returns(stream GpsInfoResponse) {}
+    // Subscribe to 'Distance sensor' updates.
+    rpc SubscribeDistanceSensor(SubscribeDistanceSensorRequest) returns(stream DistanceSensorResponse) {}
     // Subscribe to 'battery' updates.
     rpc SubscribeBattery(SubscribeBatteryRequest) returns(stream BatteryResponse) {}
+    // Subscribe to 'battery current' updates.
+    rpc SubscribeBatteryStatus(SubscribeBatteryStatusRequest) returns(stream BatteryStatusResponse) {}
     // Subscribe to 'flight mode' updates.
     rpc SubscribeFlightMode(SubscribeFlightModeRequest) returns(stream FlightModeResponse) {}
+    // Subscribe to 'mode' updates.
+    rpc SubscribeModeInfo(SubscribeModeInfoRequest) returns(stream ModeInfoResponse) {}
     // Subscribe to 'health' updates.
     rpc SubscribeHealth(SubscribeHealthRequest) returns(stream HealthResponse) {}
     // Subscribe to 'RC status' updates.
@@ -50,6 +56,8 @@ service TelemetryService {
     rpc SubscribeActuatorControlTarget(SubscribeActuatorControlTargetRequest) returns(stream ActuatorControlTargetResponse) {}
     // Subscribe to 'actuator output status' updates.
     rpc SubscribeActuatorOutputStatus(SubscribeActuatorOutputStatusRequest) returns(stream ActuatorOutputStatusResponse) {}
+    // Subscribe to 'servo output raw' updates.
+    rpc SubscribeServoOutputRaw(SubscribeServoOutputRawRequest) returns(stream ServoOutputRawResponse) {}
     // Subscribe to 'odometry' updates.
     rpc SubscribeOdometry(SubscribeOdometryRequest) returns(stream OdometryResponse) {}
     // Subscribe to 'position velocity' updates.
@@ -163,14 +171,29 @@ message GpsInfoResponse {
     GpsInfo gps_info = 1; // The next 'GPS info' state
 }
 
+message SubscribeDistanceSensorRequest {}
+message DistanceSensorResponse {
+    DistanceSensor distance_sensor = 1;
+}
+
 message SubscribeBatteryRequest {}
 message BatteryResponse {
     Battery battery = 1; // The next 'battery' state
 }
 
+message SubscribeBatteryStatusRequest {}
+message BatteryStatusResponse {
+    BatteryStatus battery_status = 1; // The next 'battery current' state
+}
+
 message SubscribeFlightModeRequest {}
 message FlightModeResponse {
     FlightMode flight_mode = 1; // The next flight mode
+}
+
+message SubscribeModeInfoRequest {}
+message ModeInfoResponse {
+    ModeInfo mode_info = 1; // The next modes
 }
 
 message SubscribeHealthRequest {}
@@ -196,6 +219,11 @@ message ActuatorControlTargetResponse {
 message SubscribeActuatorOutputStatusRequest {}
 message ActuatorOutputStatusResponse {
     ActuatorOutputStatus actuator_output_status = 1; // The next actuator output status
+}
+
+message SubscribeServoOutputRawRequest {}
+message ServoOutputRawResponse {
+    ServoOutputRaw servo_output_raw = 1; // Actuator output status
 }
 
 message SubscribeOdometryRequest {}
@@ -423,6 +451,11 @@ message AngularVelocityBody {
 message GpsInfo {
     int32 num_satellites = 1 [(mavsdk.options.default_value)="0"]; // Number of visible satellites in use
     FixType fix_type = 2; // Fix type
+    double latitude_deg = 3 [(mavsdk.options.default_value)="NaN"]; // Latitude in degrees (range: -90 to +90)
+    double longitude_deg = 4 [(mavsdk.options.default_value)="NaN"]; // Longitude in degrees (range: -180 to +180)
+    float absolute_altitude_m = 5 [(mavsdk.options.default_value)="NaN"]; // Altitude AMSL (above mean sea level) in metres
+    float h_acc_m = 6 [(mavsdk.options.default_value)="NaN"]; // Position uncertainty in metres
+    float v_acc_m = 7 [(mavsdk.options.default_value)="NaN"]; // Altitude uncertainty in metres
 }
 
 // GPS fix type.
@@ -439,7 +472,12 @@ enum FixType {
 // Battery type.
 message Battery {
     float voltage_v = 1 [(mavsdk.options.default_value)="NaN"]; // Voltage in volts
-    float remaining_percent = 2 [(mavsdk.options.default_value)="NaN"]; // Estimated battery remaining (range: 0.0 to 1.0)
+    float current_a = 2 [(mavsdk.options.default_value)="NaN"]; // Current in amps
+    float remaining_percent = 3 [(mavsdk.options.default_value)="NaN"]; // Estimated battery remaining (range: 0.0 to 1.0)
+}
+
+message BatteryStatus {
+    float mah_consumed = 1 [(mavsdk.options.default_value)="NaN"];
 }
 
 /*
@@ -465,6 +503,11 @@ enum FlightMode {
     FLIGHT_MODE_STABILIZED = 13; // In 'Stabilize' mode
     FLIGHT_MODE_RATTITUDE = 14; // In 'Rattitude' mode
 }
+
+message ModeInfo {
+    uint32 base_mode = 1 [(mavsdk.options.default_value)="0"];
+    uint32 custom_main_mode = 2 [[(mavsdk.options.default_value)="0"];
+    uint32 custom_sub_mode = 3 [(mavsdk.options.default_value)="0"];
 
 // Health type.
 message Health {
@@ -512,6 +555,10 @@ message ActuatorControlTarget {
 message ActuatorOutputStatus {
     uint32 active = 1 [(mavsdk.options.default_value)="0"]; // Active outputs
     repeated float actuator = 2; // Servo/motor output values
+}
+
+message ServoOutputRaw {
+    repeated uint32 servo = 1;
 }
 
 // Landed State enumeration.
@@ -629,7 +676,13 @@ message Imu {
     AccelerationFrd acceleration_frd = 1; // Acceleration
     AngularVelocityFrd angular_velocity_frd = 2; // Angular velocity
     MagneticFieldFrd magnetic_field_frd = 3; // Magnetic field
-    float temperature_degc = 4 [(mavsdk.options.default_value)="NaN"]; // Temperature
+    float abs_pressure = 4 [(mavsdk.options.default_value)="NaN"];
+    float pressure_alt = 5 [(mavsdk.options.default_value)="NaN"];
+    float temperature_degc = 6 [(mavsdk.options.default_value)="NaN"]; // Temperature
+}
+
+message DistanceSensor {
+    float current_distance_m = 1 [(mavsdk.options.default_value)="NaN"];
 }
 
 // Result type.
