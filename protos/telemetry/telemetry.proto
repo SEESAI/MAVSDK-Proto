@@ -190,7 +190,7 @@ message BatteryStatusResponse {
 
 message SubscribeVehicleStatusRequest {}
 message VehicleStatusResponse {
-    bool data_link_loss = 1; // The next 'data link lost' state
+    VehicleStatus vehicle_status = 1; // The next 'data link lost' state
 } 
 
 message SubscribeFlightModeRequest {}
@@ -485,6 +485,10 @@ message Battery {
 
 message BatteryStatus {
     float mah_consumed = 1 [(mavsdk.options.default_value)="NaN"];
+}
+
+message VehicleStatus {
+    bool data_link_loss = 1 [(mavsdk.options.default_value)="false"];
 }
 
 /*
