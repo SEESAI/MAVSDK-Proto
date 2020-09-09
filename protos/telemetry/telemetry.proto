@@ -42,6 +42,8 @@ service TelemetryService {
     rpc SubscribeBattery(SubscribeBatteryRequest) returns(stream BatteryResponse) {}
     // Subscribe to 'battery current' updates.
     rpc SubscribeBatteryStatus(SubscribeBatteryStatusRequest) returns(stream BatteryStatusResponse) {}
+    // Subscribe to vehicle status updates.
+    rpc SubscribeVehicleStatus(SubscribeVehicleStatusRequest) returns(stream VehicleStatusResponse) {}
     // Subscribe to 'flight mode' updates.
     rpc SubscribeFlightMode(SubscribeFlightModeRequest) returns(stream FlightModeResponse) {}
     // Subscribe to 'mode' updates.
@@ -185,6 +187,11 @@ message SubscribeBatteryStatusRequest {}
 message BatteryStatusResponse {
     BatteryStatus battery_status = 1; // The next 'battery current' state
 }
+
+message SubscribeVehicleStatusRequest {}
+message VehicleStatusResponse {
+    bool data_link_loss = 1; // The next 'data link lost' state
+} 
 
 message SubscribeFlightModeRequest {}
 message FlightModeResponse {
