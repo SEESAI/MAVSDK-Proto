@@ -490,6 +490,8 @@ message BatteryStatus {
 message VehicleStatus {
     bool manual_control_signal_loss = 1 [(mavsdk.options.default_value)="false"];
     bool data_link_loss = 2 [(mavsdk.options.default_value)="false"];
+    bool rc_signal_loss = 3 [(mavsdk.options.default_value)="false"];
+    uint32 manual_contol_data_source = 4 [(mavsdk.options.default_value)="0"];
 }
 
 /*
